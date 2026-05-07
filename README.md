@@ -1,4 +1,4 @@
-# 🐾 Sanos y Salvos — Frontend
+# 🐾 Sanos y Salvos
 Plataforma comunitaria para el reporte y localización de mascotas perdidas y encontradas, desarrollada con arquitectura de microservicios.
  
 ## Integrantes
