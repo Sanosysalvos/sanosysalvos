@@ -22,6 +22,7 @@ Sanos y Salvos es una solución digital que centraliza la gestión de reportes d
 * TypeScript
 * Tailwind CSS
 * Firebase Auth
+
 **Infraestructura**
  
 * Vercel (deploy)
@@ -102,11 +103,11 @@ npm run lint      # Linter
  
 | Rama | Uso |
 |---|---|
-| `main` | Código en producción |
-| `develop` | Integración de trabajo nuevo |
-| `feature/*` | Desarrollo de funcionalidades |
-| `release/*` | Preparación de versión |
-| `hotfix/*` | Corrección de errores en producción |
+| `main` | Código en producción (rama por defecto) |
+| `test` | Pruebas generales del sistema |
+| `test-backend` | Pruebas del backend y microservicios |
+| `test-backend-bff` | Pruebas específicas del BFF |
+
  
 ---
  
