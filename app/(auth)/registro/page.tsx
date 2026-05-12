@@ -47,10 +47,13 @@ export default function RegisterPage() {
 
       // 3. REGISTRO EN TU BASE DE DATOS SQL
       // Aquí enviamos el firebase_uid para vincular ambas cuentas
+      // 3. REGISTRO EN TU BASE DE DATOS SQL
       const response = await fetch(
-        "process.env.NEXT_PUBLIC_API_URL/api/users",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
         {
           method: "POST",
+          // ... el resto de tu configuración (headers, body, etc)
+
           headers: {
             "Content-Type": "application/json",
           },
