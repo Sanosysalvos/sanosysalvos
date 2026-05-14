@@ -57,9 +57,9 @@ export default function ExplorarPage() {
   }, []);
 
   // Lógica de filtrado LOCAL corregida con Avistado
-  const mascotasFiltradas = mascotas.filter((m) => {
-    const especieReal = m.especie || m.tipo || "Otro";
-    const estadoDB = m.estado ? m.estado.toUpperCase() : "";
+  const mascotasFiltradas = mascotas.filter((mascota) => {
+    const especieReal = mascota.especie || mascota.tipo || "Otro";
+    const estadoDB = mascota.estado ? mascota.estado.toUpperCase() : "";
 
     let coincideEstado = false;
 
@@ -187,7 +187,7 @@ export default function ExplorarPage() {
                     alt={mascota.nombre}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  {/* BADGES CON LOS 3 COLORES DINÁMICOS */}
+                  {/* BADGES DINÁMICOS */}
                   <div
                     className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl backdrop-blur-md text-white ${
                       mascota.estado?.toUpperCase() === "PERDIDO"
@@ -215,7 +215,7 @@ export default function ExplorarPage() {
 
                   <div className="flex items-center text-slate-500 text-sm font-medium mb-4">
                     <MapPin size={14} className="mr-1.5 text-indigo-500" />
-                    {mascota.ubicacion || m.direccionFormateada}
+                    {mascota.ubicacion || mascota.direccionFormateada}
                   </div>
 
                   <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-indigo-600 font-black text-sm">
