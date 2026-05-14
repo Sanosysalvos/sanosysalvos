@@ -111,6 +111,19 @@ export default function ExplorarPage() {
               </p>
             </div>
 
+{/* SECCIÓN DE FILTROS - Diseño mejorado con Avistado */}
+      <section className="bg-white border-b py-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+              <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                <Search className="text-indigo-600" /> Computar Reportes
+              </h1>
+              <p className="text-slate-500 mt-1 font-medium">
+                Filtra entre {mascotas.length} mascotas encontradas, perdidas y avistadas
+              </p>
+            </div>
+
             <div className="flex flex-wrap gap-4">
               {/* Filtro por Especie */}
               <div className="space-y-2">
@@ -134,13 +147,13 @@ export default function ExplorarPage() {
                 </div>
               </div>
 
-              {/* Filtro por Estado */}
+              {/* Filtro por Estado - ¡ACTUALIZADO CON AVISTADO! */}
               <div className="space-y-2">
                 <span className="text-[10px] font-black text-slate-400 uppercase ml-1">
                   Estado del reporte
                 </span>
                 <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200">
-                  {["Todos", "Perdido", "Encontrado"].map((e) => (
+                  {["Todos", "Perdido", "Encontrado", "Avistado"].map((e) => (
                     <button
                       key={e}
                       onClick={() => setFiltroEstado(e)}
@@ -159,7 +172,6 @@ export default function ExplorarPage() {
           </div>
         </div>
       </section>
-
       {/* RESULTADOS */}
       <section className="max-w-7xl mx-auto px-4 py-12 w-full">
         {mascotasFiltradas.length === 0 ? (
