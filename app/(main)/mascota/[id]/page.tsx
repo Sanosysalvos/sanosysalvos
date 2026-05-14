@@ -90,16 +90,18 @@ export default function DetalleMascota() {
                 className="w-full h-full object-cover"
                 alt={mascota.nombre}
               />
-              <div
-                className={`absolute top-6 right-6 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest ${
-                  mascota.estado === "Perdido"
-                    ? "bg-red-600 text-white"
-                    : "bg-emerald-500 text-white"
-                }`}
-              >
-                {mascota.estado}
-              </div>
-            </div>
+{/* Badge de Estado Ampliado - ¡Actualizado con 3 colores dinámicos! */}
+<div
+  className={`absolute top-6 right-6 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest text-white shadow-xl backdrop-blur-md ${
+    mascota.estado?.toUpperCase() === "PERDIDO"
+      ? "bg-rose-600"
+      : ["RECUPERADO", "RETIRADO", "ENCONTRADO"].includes(mascota.estado?.toUpperCase())
+      ? "bg-emerald-500"
+      : "bg-sky-500"
+  }`}
+>
+  {mascota.estado}
+</div>
 
             {/* Información básica */}
             <div className="flex flex-col">

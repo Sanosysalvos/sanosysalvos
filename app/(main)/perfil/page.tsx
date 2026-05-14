@@ -296,13 +296,17 @@ export default function PerfilPage() {
                       </div>
                     )}
 
-                    {/* Badge de Estado */}
+                    {/* Badge de Estado - ¡Actualizado con 3 colores dinámicos! */}
                     <div className="absolute top-3 left-3">
                       <span
-                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          m.estado === "PERDIDO"
-                            ? "bg-red-500 text-white"
-                            : "bg-emerald-500 text-white"
+                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-sm backdrop-blur-sm ${
+                          m.estado?.toUpperCase() === "PERDIDO"
+                            ? "bg-rose-500"
+                            : ["RECUPERADO", "RETIRADO", "ENCONTRADO"].includes(
+                                  m.estado?.toUpperCase(),
+                                )
+                              ? "bg-emerald-500"
+                              : "bg-sky-500"
                         }`}
                       >
                         {m.estado}
