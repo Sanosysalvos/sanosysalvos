@@ -28,7 +28,7 @@ export default function ExplorarPage() {
   const [mascotas, setMascotas] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
 
-  // Estados de filtros (Solo viven en el cliente por ahora)
+  // Estados de filtros
   const [filtroTipo, setFiltroTipo] = useState("Todos");
   const [filtroEstado, setFiltroEstado] = useState("Todos");
 
@@ -38,7 +38,6 @@ export default function ExplorarPage() {
         const baseUrl =
           process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8080";
 
-        // Usamos la misma ruta que el Home (la que sí funciona)
         const res = await fetch(`${baseUrl}/api/explorar`, {
           cache: "no-store",
         });
@@ -46,7 +45,6 @@ export default function ExplorarPage() {
         if (!res.ok) throw new Error("Error en servidor");
 
         const datos = await res.json();
-        // Si la DB tiene datos los carga, si no, usa mocks
         setMascotas(datos.length > 0 ? datos : mockMascotas);
       } catch (error) {
         console.error("Fallo de conexión, cargando mocks...");
@@ -58,12 +56,9 @@ export default function ExplorarPage() {
     cargarDatos();
   }, []);
 
-  // Lógica de filtrado LOCAL corregida
+  // Lógica de filtrado LOCAL corregida con Avistado
   const mascotasFiltradas = mascotas.filter((m) => {
-    // 1. Normalización de Especie (Igual que antes, muy robusto)
     const especieReal = m.especie || m.tipo || "Otro";
-
-    // 2. Normalización de Estado (Mapeo de UI -> Base de Datos)
     const estadoDB = m.estado ? m.estado.toUpperCase() : "";
 
     let coincideEstado = false;
@@ -71,16 +66,15 @@ export default function ExplorarPage() {
     if (filtroEstado === "Todos") {
       coincideEstado = true;
     } else if (filtroEstado === "Perdido") {
-      // Si el usuario busca "Perdido", filtramos por el estado exacto
       coincideEstado = estadoDB === "PERDIDO";
     } else if (filtroEstado === "Encontrado") {
-      // Si el usuario busca "Encontrado", incluimos varios estados de la DB
-      coincideEstado = ["RECUPERADO", "RETIRADO", "AVISTADO"].includes(
+      coincideEstado = ["RECUPERADO", "RETIRADO", "ENCONTRADO"].includes(
         estadoDB,
       );
+    } else if (filtroEstado === "Avistado") {
+      coincideEstado = estadoDB === "AVISTADO";
     }
 
-    // 3. Lógica final de coincidencia
     const coincideTipo =
       filtroTipo === "Todos" ||
       especieReal.toLowerCase() === filtroTipo.toLowerCase();
@@ -98,7 +92,7 @@ export default function ExplorarPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 flex flex-col">
-      {/* SECCIÓN DE FILTROS - Diseño mejorado */}
+      {/* SECCIÓN DE FILTROS */}
       <section className="bg-white border-b py-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -107,20 +101,8 @@ export default function ExplorarPage() {
                 <Search className="text-indigo-600" /> Explorar Reportes
               </h1>
               <p className="text-slate-500 mt-1 font-medium">
-                Filtra entre {mascotas.length} mascotas encontradas y perdidas
-              </p>
-            </div>
-
-{/* SECCIÓN DE FILTROS - Diseño mejorado con Avistado */}
-      <section className="bg-white border-b py-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <Search className="text-indigo-600" /> Computar Reportes
-              </h1>
-              <p className="text-slate-500 mt-1 font-medium">
-                Filtra entre {mascotas.length} mascotas encontradas, perdidas y avistadas
+                Filtra entre {mascotas.length} mascotas encontradas, perdidas y
+                avistadas
               </p>
             </div>
 
@@ -147,7 +129,7 @@ export default function ExplorarPage() {
                 </div>
               </div>
 
-              {/* Filtro por Estado - ¡ACTUALIZADO CON AVISTADO! */}
+              {/* Filtro por Estado */}
               <div className="space-y-2">
                 <span className="text-[10px] font-black text-slate-400 uppercase ml-1">
                   Estado del reporte
@@ -172,6 +154,7 @@ export default function ExplorarPage() {
           </div>
         </div>
       </section>
+
       {/* RESULTADOS */}
       <section className="max-w-7xl mx-auto px-4 py-12 w-full">
         {mascotasFiltradas.length === 0 ? (
@@ -204,11 +187,16 @@ export default function ExplorarPage() {
                     alt={mascota.nombre}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
+                  {/* BADGES CON LOS 3 COLORES DINÁMICOS */}
                   <div
-                    className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl backdrop-blur-md ${
-                      mascota.estado === "Perdido"
-                        ? "bg-red-500/90 text-white"
-                        : "bg-emerald-500/90 text-white"
+                    className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl backdrop-blur-md text-white ${
+                      mascota.estado?.toUpperCase() === "PERDIDO"
+                        ? "bg-rose-500/90"
+                        : ["RECUPERADO", "RETIRADO", "ENCONTRADO"].includes(
+                              mascota.estado?.toUpperCase(),
+                            )
+                          ? "bg-emerald-500/90"
+                          : "bg-sky-500/90"
                     }`}
                   >
                     {mascota.estado}
@@ -227,7 +215,7 @@ export default function ExplorarPage() {
 
                   <div className="flex items-center text-slate-500 text-sm font-medium mb-4">
                     <MapPin size={14} className="mr-1.5 text-indigo-500" />
-                    {mascota.ubicacion || mascota.direccionFormateada}
+                    {mascota.ubicacion || m.direccionFormateada}
                   </div>
 
                   <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-indigo-600 font-black text-sm">
