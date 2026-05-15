@@ -35,8 +35,7 @@ export default function ExplorarPage() {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        const baseUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8080";
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
         const res = await fetch(`${baseUrl}/api/explorar`, {
           cache: "no-store",
