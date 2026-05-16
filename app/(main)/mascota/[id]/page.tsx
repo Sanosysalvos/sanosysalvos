@@ -11,6 +11,7 @@ import {
   Heart,
   Send,
   X,
+  FileText,
 } from "lucide-react";
 
 export default function DetalleMascota() {
@@ -131,7 +132,7 @@ export default function DetalleMascota() {
               </span>
 
               <div className="space-y-6">
-                {/* Tarjetas de Info (Ubicación, Fecha, Descripción igual que antes) */}
+                {/* Tarjetas de Info (Ubicación, Fecha y Descripción) */}
                 <div className="flex items-center gap-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
                   <div className="bg-red-50 p-3 rounded-xl text-red-500">
                     <MapPin />
@@ -163,6 +164,22 @@ export default function DetalleMascota() {
                             { day: "numeric", month: "long", year: "numeric" },
                           )
                         : "Fecha no especificada"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* NUEVA TARJETA: Cuadro de Descripción */}
+                <div className="flex items-center gap-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                  <div className="bg-blue-50 p-3 rounded-xl text-blue-500">
+                    {/* Puedes cambiar FileText por MessageSquare si prefieres un icono de burbuja de texto */}
+                    <FileText size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-bold text-slate-400 uppercase">
+                      Descripción
+                    </p>
+                    <p className="text-base font-medium text-slate-700 mt-0.5 leading-relaxed">
+                      {mascota.descripcion || "Sin descripción disponible."}
                     </p>
                   </div>
                 </div>
