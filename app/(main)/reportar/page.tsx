@@ -198,7 +198,6 @@ export default function ReportarPage() {
                   <option value="otro">Otro</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   Edad aproximada
@@ -208,9 +207,21 @@ export default function ReportarPage() {
                   <input
                     type="number"
                     min="0"
-                    className={inputClasses}
-                    value={edad}
-                    onChange={(e) => setEdad(Number(e.target.value))}
+                    className={`${inputClasses} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                    /* Si es 0 o no tiene valor, mostramos vacío en la pantalla para que no moleste */
+                    value={edad === 0 ? "" : edad}
+                    onChange={(e) => {
+                      const val = e.target.value;
+
+                      // Si el usuario borra todo, le pasamos un 0.
+                      // Como arriba pusimos que si es 0 muestre "", la pantalla se mantendrá limpia para escribir libremente.
+                      if (val === "") {
+                        setEdad(0);
+                      } else {
+                        setEdad(Number(val));
+                      }
+                    }}
+                    placeholder="0"
                     required
                   />
                 </div>
