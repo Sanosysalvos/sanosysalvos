@@ -85,7 +85,7 @@ export default function ReportarPage() {
       setLoading(false);
     }
   };
-
+  const hoy = new Date().toLocaleDateString("en-CA");
   const inputClasses =
     "block w-full pl-10 pr-3 py-2 bg-white text-slate-900 placeholder:text-slate-400 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors";
 
@@ -240,6 +240,7 @@ export default function ReportarPage() {
                     className={inputClasses}
                     value={fecha}
                     onChange={(e) => setFecha(e.target.value)}
+                    max={hoy} // 💡 Bloquea automáticamente cualquier fecha posterior a hoy
                     required
                   />
                 </div>
