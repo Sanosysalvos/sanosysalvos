@@ -148,6 +148,7 @@ export default function PerfilPage() {
             (m: any) => m.id !== confirmarEliminar.id,
           ),
         }));
+        toast.success("Eliminado correctamente");
         setConfirmarEliminar(null);
       } else {
         alert("No se pudo eliminar el reporte.");
