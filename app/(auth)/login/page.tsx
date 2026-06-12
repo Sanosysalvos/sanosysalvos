@@ -1,30 +1,64 @@
-"use client";
+"use client"; // Muy importante agregarlo porque usamos useState y useRouter
 
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Heart, Mail, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { auth } from "@/lib/firebase"; // Asegúrate de que esta ruta coincida con tu archivo firebase.ts
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // Estado para mostrar mensajes de error
+  const [error, setError] = useState(''); 
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(''); // Limpiar errores previos
+    setError(''); // Limpiamos errores previos
 
-    // 🔐 SIMULACIÓN DE VALIDACIÓN (MOCK LOGIN)
-    if (email === 'maria@correo.com' && password === 'maria123') {
-      // Es un usuario normal -> va a su perfil
-      router.push('/perfil');
-    } else if (email === 'admin@sanosysalvos.cl' && password === 'admin123') {
-      // Es el administrador -> va al dashboard
-      router.push('/admin');
-    } else {
-      // Credenciales incorrectas
-      setError('Correo o contraseña incorrectos. Intenta nuevamente.');
+    try {
+      // 1. Iniciamos sesión con Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // 2. Obtenemos el token de seguridad
+      const token = await user.getIdToken();
+
+      // 3. Buscamos/Sincronizamos al usuario en nuestro backend
+      const response = await fetch("http://localhost:8081/api/users", {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          firebaseUid: user.uid,
+          email: user.email,
+          nombre: user.displayName || "Usuario",
+        }),
+      });
+
+      if (response.ok) {
+        // 4. ¡Aquí está la magia! Leemos lo que nos responde Spring Boot
+        const userData = await response.json(); 
+        
+        // Evaluamos el rol (Ojo: dependiendo de cómo lo devuelva tu Java, puede llamarse isAdmin, admin, o is_admin)
+        if (userData.isAdmin === true || userData.admin === true || userData.is_admin === true) {
+          console.log("¡Bienvenido Administrador!");
+          router.push("/admin"); // Lo mandamos a la vista de administrador
+        } else {
+          console.log("¡Bienvenido Usuario normal!");
+          router.push("/home"); // Lo mandamos a la vista normal
+        }
+        
+      } else {
+        setError("Error al obtener los datos del servidor.");
+      }
+
+    } catch (err: any) {
+      setError("Credenciales incorrectas o error de conexión.");
+      console.error(err.message);
     }
   };
 
@@ -95,6 +129,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 bg-white text-slate-900 placeholder:text-slate-400 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm transition-colors"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
@@ -117,15 +152,6 @@ export default function LoginPage() {
                   ¿Olvidó su contraseña?
                 </Link>
               </div>
-            </div>
-
-            {/* --- CREDENCIALES DE PRUEBA (MOCK) --- */}
-            <div className="bg-slate-50 p-4 rounded-md text-xs text-slate-500 border border-slate-200">
-              <p className="font-bold text-slate-700 mb-1">Credenciales de prueba:</p>
-              <ul className="list-disc pl-4 space-y-1">
-                <li>Usuario: <b>maria@correo.com</b> / <b>maria123</b></li>
-                <li>Admin: <b>admin@sanosysalvos.cl</b> / <b>admin123</b></li>
-              </ul>
             </div>
 
             <div>
